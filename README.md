@@ -73,6 +73,13 @@ A seeder is included to:
 - Create a discount group with 15% off
 - Assign those products to the group
 
+
+### Run Migration
+
+```bash
+php artisan migrate
+```
+
 ### Run Seeder
 
 ```bash
