@@ -4,36 +4,40 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Cart\AddProductToCartRequest;
 use App\Http\Requests\Cart\RemoveProductFromCartRequest;
+use App\Http\Requests\Cart\SetCartProductQuantityRequest;
 use App\Http\Resources\Cart\CartResource;
 use App\Models\Cart;
-use App\Models\UserProductGroup;
+use App\Services\CartService;
 use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
+    public function __construct(public CartService $cartService)
+    {
+    }
+
     public function addProduct(AddProductToCartRequest $request)
     {
-        $cartItem = Cart::firstOrNew([
-            'user_id' => Auth::id(),
-            'product_id' => $request->validated('product_id'),
-        ]);
-
-        $cartItem->quantity = $cartItem->exists
-            ? $cartItem->quantity + 1
-            : 1;
-
-        $cartItem->save();
-
+        $this->cartService->addProduct(Auth::id(), $request->validated('product_id'));
         return response()->json(['message' => 'Product added to cart']);
     }
 
     public function removeProduct(RemoveProductFromCartRequest $request)
     {
-        Cart::where('user_id', Auth::id())
-            ->where('product_id', $request->validated('product_id'))
-            ->delete();
-
+        $this->cartService->removeProduct(Auth::id(), $request->validated('product_id'));
         return response()->json(['message' => 'Product removed from cart']);
+    }
+
+
+    public function setProductQuantity(SetCartProductQuantityRequest $request)
+    {
+        $this->cartService->setProductQuantity(
+            Auth::id(),
+            $request->validated('product_id'),
+            $request->validated('quantity')
+        );
+
+        return response()->json(['message' => 'Product quantity updated']);
     }
 
     public function getCart()
@@ -44,5 +48,4 @@ class CartController extends Controller
 
         return CartResource::collection($cartItems);
     }
-
 }

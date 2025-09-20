@@ -22,7 +22,7 @@ class RemoveProductFromCartRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_id' => 'required|exists:products,product_id',
+            'product_id' => 'required|exists:products,id',
         ];
     }
 }

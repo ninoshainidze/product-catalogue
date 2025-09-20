@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Cart extends Model
 {
@@ -17,7 +18,7 @@ class Cart extends Model
         'quantity'
     ];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
@@ -31,13 +32,14 @@ class Cart extends Model
         $cartItems = self::where('user_id', $this->user_id)->get()->keyBy('product_id');
 
         foreach ($groups as $group) {
-            $groupProductIds = $group->products->pluck('product_id')->toArray();
+            $groupProductIds = $group->products->pluck('id')->toArray();
 
             if (collect($groupProductIds)->every(fn($id) => $cartItems->has($id))) {
                 $minQty = collect($groupProductIds)->map(fn($id) => $cartItems[$id]->quantity)->min();
 
                 if (in_array($this->product_id, $groupProductIds)) {
-                    return round(($this->product->price * $group->discount / 100) * min($minQty, $this->quantity), 2);
+                    $unitDiscount = $this->product->price * $group->discount / 100;
+                    return round($unitDiscount * $minQty, 2);
                 }
             }
         }
