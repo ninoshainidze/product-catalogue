@@ -24,13 +24,13 @@ class UserProductGroupSeeder extends Seeder
 
         $group = UserProductGroup::create([
             'user_id' => $user->id,
-            'discount' => 15,
+            'discount' => random_int(10,80),
         ]);
 
         // Assign selected products to the discount group
         foreach ($products as $product) {
             ProductGroupItem::create([
-                'user_product_group_id' => $group->id, // use correct column name
+                'user_product_group_id' => $group->id,
                 'product_id' => $product->id,
             ]);
         }

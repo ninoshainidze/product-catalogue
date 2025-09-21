@@ -25,6 +25,12 @@ This is a Laravel-based API for managing a shopping cart with smart discount log
 |--------|--------------|---------------------|
 | POST   | `/login`     | Returns access token |
 
+## Test User Credentials
+
+Use the following credentials to authenticate and test the API:
+
+> These credentials are seeded into the database for testing purposes.
+
 ## Features
 
 ### Cart Endpoints

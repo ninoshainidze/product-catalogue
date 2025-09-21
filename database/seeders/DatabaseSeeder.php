@@ -14,13 +14,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 10 users, each with 5 products
-        User::factory(10)->create()->each(function ($user) {
-            Product::factory(5)->create([
-                'user_id' => $user->id,
-            ]);
-        });
-
-        $this->call(UserProductGroupSeeder::class);
+        $this->call([
+            TestUserWithCartSeeder::class,
+            UserProductGroupSeeder::class,
+        ]);
     }
 }
